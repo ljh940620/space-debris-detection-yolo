@@ -73,3 +73,9 @@ python src\train\debris_only_run/train_yolo11_debris_only.py --model yolov11n.pt
 ```bash
 python src/evaluate/evaluate_final.py
 ```
+
+### 1주차: 베이스라인 모델 선정 및 성능 비교
+- **목표:** YOLOv8n과 YOLOv11n의 기본 성능을 비교하여 프로젝트의 베이스라인 모델 선정.
+- **수행 내용:** 동일한 데이터셋과 학습 조건 하에 두 모델을 훈련하고, Test Set으로 최종 성능 평가 진행. (`evaluate_final.py`)
+- **주요 결과:** YOLOv11n이 재현율(Recall)에서 0.727로 YOLOv8n(0.630) 대비 명백한 우위를 보임. 이는 '위험체 누락 방지'라는 핵심 목표에 더 부합함.
+- **결정:** YOLOv11n을 2주차 개선 대상 모델로 최종 선정.
