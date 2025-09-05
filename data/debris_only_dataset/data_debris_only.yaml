@@ -1,0 +1,10 @@
+# 'debris' 1개 클래스 학습을 위한 설정 파일
+train: C:\Users\leeji\Desktop\PythonWorkspace\Space_Debris_Project_Yolo\data\debris_only_dataset\train\images
+val: C:\Users\leeji\Desktop\PythonWorkspace\Space_Debris_Project_Yolo\data\debris_only_dataset\valid\images
+test: C:\Users\leeji\Desktop\PythonWorkspace\Space_Debris_Project_Yolo\data\debris_only_dataset\test\images
+
+# 클래스 개수
+nc: 1
+
+# 클래스 이름
+names: ['debris']
