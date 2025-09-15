@@ -1,6 +1,12 @@
 # space-debris-detection-yolo
 # YOLOv8 vs. YOLOv11: 우주 위험체 탐지 성능 비교 분석
 
+### 1주차: 베이스라인 모델 선정 및 성능 비교
+- **목표:** YOLOv8n과 YOLOv11n의 기본 성능을 비교하여 프로젝트의 베이스라인 모델 선정.
+- **수행 내용:** 동일한 데이터셋과 학습 조건 하에 두 모델을 훈련하고, Test Set으로 최종 성능 평가 진행. (`evaluate_final.py`)
+- **주요 결과:** YOLOv11n이 재현율(Recall)에서 0.727로 YOLOv8n(0.630) 대비 명백한 우위를 보임. 이는 '위험체 누락 방지'라는 핵심 목표에 더 부합함.
+- **결정:** YOLOv11n을 2주차 개선 대상 모델로 최종 선정.
+
 ![Project Banner Image](image.png)
 
 ## 1. Abstract (초록)
@@ -74,8 +80,42 @@ python src\train\debris_only_run/train_yolo11_debris_only.py --model yolov11n.pt
 python src/evaluate/evaluate_final.py
 ```
 
-### 1주차: 베이스라인 모델 선정 및 성능 비교
-- **목표:** YOLOv8n과 YOLOv11n의 기본 성능을 비교하여 프로젝트의 베이스라인 모델 선정.
-- **수행 내용:** 동일한 데이터셋과 학습 조건 하에 두 모델을 훈련하고, Test Set으로 최종 성능 평가 진행. (`evaluate_final.py`)
-- **주요 결과:** YOLOv11n이 재현율(Recall)에서 0.727로 YOLOv8n(0.630) 대비 명백한 우위를 보임. 이는 '위험체 누락 방지'라는 핵심 목표에 더 부합함.
-- **결정:** YOLOv11n을 2주차 개선 대상 모델로 최종 선정.
+## 2주차 진행 상황
+### 초기 모델 성능 평가 완료
+- **Base Model:** `YOLOv11n`
+- **초기 평가 결과:**
+  - 총 11개의 테스트 객체 중 8개를 탐지하며 준수한 성능을 보였습니다.
+  - 하지만 일부 객체를 탐지하지 못하는 **낮은 재현율(Recall)** 문제와, 하나의 객체에 여러 개의 박스가 생성되는 **중복 탐지** 문제를 확인했습니다.
+
+### 후처리 하이퍼파라미터 튜닝 실험
+- **가설:** 초기 모델의 문제점은 후처리 파라미터(`Confidence Threshold`, `NMS IoU Threshold`) 조정으로 해결 가능할 것이다.
+- **실험 내용:**
+  1.  **Confidence Threshold 튜닝:** 재현율 개선을 위해 임계값 조정 (0.25 → 0.1)
+  2.  **NMS IoU Threshold 튜닝:** 중복 탐지 문제 해결을 위해 임계값 조정 (0.7 → 0.5)
+- **실험 결론:**
+  - 파라미터 튜닝만으로는 근본적인 문제 해결에 명확한 한계가 있음을 확인했습니다.
+  - 문제의 원인은 후처리 단계가 아닌, **모델 자체의 근본적인 탐지 능력 부족**으로 판단됩니다.
+
+---
+
+## 3. 실험 환경
+
+- **Model:** `YOLOv11n`
+- **Dataset:** Debris 단일 클래스 데이터셋 (Test Set: 123 Images, 11 instances)
+- **학습 파라미터:**
+  - **Epochs:** 50 (mAP 점수가 41 에폭에서 수렴)
+  - **Image Size:** 640x640
+- **개발 환경:**
+  - `Ultralytics 8.3.189`
+  - `Python 3.9.23`
+  - `PyTorch 2.5.1`
+  - `NVIDIA GeForce RTX 2080` (CUDA:0)
+
+---
+
+## 4. 향후 계획
+
+- **모델 자체의 성능 강화:**
+  - **Data Augmentation (데이터 증강):** 다양한 형태의 객체를 학습시켜 모델의 일반화 성능과 근본적인 탐지 능력을 높이는 재학습을 진행할 예정입니다.
+
+
